@@ -7,15 +7,12 @@ import java.util.Date;
 
 
 import javax.persistence.*;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.neu.pmbackend.entity.Backlog;
 
 
 
@@ -28,38 +25,104 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class Project {
 	
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	@NotBlank(message = "projectName should not be blank")
-	private String projectName;
-	@NotBlank(message = "projectIdentifier should not be blank")
-	@Column(updatable = false,unique = true)
-	@Size(min =4, max = 8 , message = "projectIdentifier should be 4 to 8 char")
-	private String projectIdentifier;
-	@NotBlank(message = "projectDescription should not be blank")
-	private String projectDescription;
-	@JsonFormat(pattern = "yyyy-mm-dd")
-	private Date start_date;
-	@JsonFormat(pattern = "yyyy-mm-dd")
-	private Date end_date;
-	@JsonFormat(pattern = "yyyy-mm-dd")
-	private Date created_At;
-	@JsonFormat(pattern = "yyyy-mm-dd")
-	private Date updated_At;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @NotBlank(message = "Project name is required")
+    private String projectName;
+    @NotBlank(message = "Project identifier is required")
+    @Size(min=4, max = 5, message = "Please use 4 to 5 characters")
+    @Column(updatable = false,unique = true)
+    private String projectIdentifier;
+    @NotBlank(message = "Project description is required")
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @JsonFormat(pattern = "yyyy-mm-dd")
+    private Date start_date;
+    @JsonFormat(pattern = "yyyy-mm-dd")
+    private Date end_date;
+    @JsonFormat(pattern = "yyyy-mm-dd")
+    @Column(updatable = false)
+    private Date created_At;
+    @JsonFormat(pattern = "yyyy-mm-dd")
+    private Date updated_At;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
+    @JsonIgnore
+    private Backlog backlog;
+
+    //json ignore necessary because otherwise backlogs are also fetched if project is to be updated.
+
+    private String projectLeader;
+
+    /**
+	 * @return the projectLeader
+	 */
+	public String getProjectLeader() {
+		return projectLeader;
+	}
+
+	/**
+	 * @param projectLeader the projectLeader to set
+	 */
+	public void setProjectLeader(String projectLeader) {
+		this.projectLeader = projectLeader;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private User user;
+	
+	
+	/**
+	 * @return the backlog
+	 */
+	public Backlog getBacklog() {
+		return backlog;
+	}
+
+	/**
+	 * @param backlog the backlog to set
+	 */
+	public void setBacklog(Backlog backlog) {
+		this.backlog = backlog;
+	}
+
+	/**
+	 * @return the user
+	 */
+	public User getUser() {
+		return user;
+	}
+
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+
 	
 	
 	
 	
 	
 	
-	public Project(int id, String projectName, String projectIdentifier, String projectDescription, Date start_date,
+	public Project(long id, String projectName, String projectIdentifier, String projectDescription, Date start_date,
 			Date end_date, Date created_At, Date updated_At) {
 		super();
 		this.id = id;
 		this.projectName = projectName;
 		this.projectIdentifier = projectIdentifier;
-		this.projectDescription = projectDescription;
+		this.description = projectDescription;
 		this.start_date = start_date;
 		this.end_date = end_date;
 		this.created_At = created_At;
@@ -70,13 +133,13 @@ public class Project {
 		
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
 
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -104,17 +167,6 @@ public class Project {
 		this.projectIdentifier = projectIdentifier;
 	}
 
-
-
-	public String getProjectDescription() {
-		return projectDescription;
-	}
-
-
-
-	public void setProjectDescription(String description) {
-		this.projectDescription = description;
-	}
 
 
 
@@ -174,6 +226,14 @@ public class Project {
 	@PreUpdate
 	protected void onUpdate() {
 		this.updated_At = new Date();
+	}
+
+	@Override
+	public String toString() {
+		return "Project [id=" + id + ", projectName=" + projectName + ", projectIdentifier=" + projectIdentifier
+				+ ", description=" + description + ", start_date=" + start_date + ", end_date=" + end_date
+				+ ", created_At=" + created_At + ", updated_At=" + updated_At 
+				+ ", projectLeader=" + projectLeader + ", user=" + user + "]";
 	}
 	
 	

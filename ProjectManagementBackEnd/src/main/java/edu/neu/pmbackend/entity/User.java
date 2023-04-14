@@ -3,18 +3,29 @@
  */
 package edu.neu.pmbackend.entity;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author gokuljayavel
@@ -22,9 +33,11 @@ import javax.validation.constraints.NotBlank;
  */
 
 @Entity
-public class User {
+public class User implements UserDetails{
 	
-	 @Id
+	 	private static final long serialVersionUID = 1L;
+
+		@Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 
@@ -40,7 +53,14 @@ public class User {
 	    private String confirmPassword;
 	    private Date create_At;
 	    private Date update_At;
-	    private String Role;
+	    @Column(name = "role", columnDefinition = "varchar(25) default 'Manager'")
+	    private String role;
+	    
+	    
+	    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
+	    private List<Project> projects = new ArrayList<>();
+	    
+	    
 		/**
 		 * @return the id
 		 */
@@ -129,14 +149,14 @@ public class User {
 		 * @return the role
 		 */
 		public String getRole() {
-			return Role;
+			return role;
 		}
 
 		/**
 		 * @param role the role to set
 		 */
 		public void setRole(String role) {
-			Role = role;
+			this.role = role;
 		}
 		@PrePersist
 		 protected void onCreate(){
@@ -147,6 +167,42 @@ public class User {
 		  protected void onUpdate(){
 		        this.update_At = new Date();
 		    }
+		@Override
+		@JsonIgnore
+		public Collection<? extends GrantedAuthority> getAuthorities() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		@Override
+		@JsonIgnore
+		public boolean isAccountNonExpired() {
+			// TODO Auto-generated method stub
+			return true;
+		}
+		@Override
+		@JsonIgnore
+		public boolean isAccountNonLocked() {
+			// TODO Auto-generated method stub
+			return true;
+		}
+		@Override
+		public String toString() {
+			return "User [id=" + id + ", username=" + username + ", fullName=" + fullName + ", password=" + password
+					+ ", confirmPassword=" + confirmPassword + ", create_At=" + create_At + ", update_At=" + update_At
+					+ ", role=" + role + "]";
+		}
+		@Override
+		@JsonIgnore
+		public boolean isCredentialsNonExpired() {
+			// TODO Auto-generated method stub
+			return true;
+		}
+		@Override
+		@JsonIgnore
+		public boolean isEnabled() {
+			// TODO Auto-generated method stub
+			return true;
+		}
 		
 
 	    

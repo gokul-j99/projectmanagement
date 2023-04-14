@@ -19,9 +19,16 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestController
 public class CustomReponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 	
-	@ExceptionHandler
+	@ExceptionHandler(ProjectIdException.class)
 	public final ResponseEntity<Object> handleProjectIdException(ProjectIdException ex, WebRequest req){
 		ProjectIdExceptionResponse exceptionRes = new ProjectIdExceptionResponse(ex.getMessage());
+		
+		return new ResponseEntity(exceptionRes, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(UserNameALreadyExistException.class)
+	public final ResponseEntity<Object> handleUserName(UserNameALreadyExistException ex, WebRequest req){
+		UserNameALreadyExistRespons exceptionRes = new UserNameALreadyExistRespons(ex.getMessage());
 		
 		return new ResponseEntity(exceptionRes, HttpStatus.BAD_REQUEST);
 	}

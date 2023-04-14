@@ -18,4 +18,6 @@ public interface ProjectDAO {
 
     void deleteById(Integer id);
     
+    public Project update(Project user);
+    
 }
