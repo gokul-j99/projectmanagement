@@ -21,6 +21,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,7 +48,9 @@ public class User implements UserDetails{
 	    private String username;
 	    @NotBlank(message = "Please enter your full name")
 	    private String fullName;
+	    
 	    @NotBlank(message = "Password field is required")
+	    //@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$", message = "Password must contain at least 8 characters, one letter, one number, and one special character")
 	    private String password;
 	    @Transient
 	    private String confirmPassword;
@@ -59,6 +62,11 @@ public class User implements UserDetails{
 	    
 	    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
 	    private List<Project> projects = new ArrayList<>();
+	    
+	    
+	    
+	    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "manager", orphanRemoval = true)
+	    private List<TeamMember> teammembers = new ArrayList<>();
 	    
 	    
 		/**

@@ -11,6 +11,7 @@ package edu.neu.pmbackend.dao;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,8 @@ public class BacklogDAOImpl implements BacklogDAO {
 	@PersistenceContext
 	  private EntityManager entityManager;
 
+	@Override
+	@Transactional
 	  public Backlog save(Backlog backlog) {
 	    if (backlog.getId() == null) {
 	      entityManager.persist(backlog);
@@ -32,19 +35,21 @@ public class BacklogDAOImpl implements BacklogDAO {
 	      return entityManager.merge(backlog);
 	    }
 	  }
-
+	@Override
 	  public Backlog findById(Long id) {
 	    return entityManager.find(Backlog.class, id);
 	  }
-
+	@Override
 	  public Backlog findByProjectIdentifier(String identifier) {
 		  TypedQuery<Backlog> query = entityManager.createQuery("SELECT p FROM Backlog p WHERE p.projectIdentifier = :projectIdentifier", Backlog.class);
 	        query.setParameter("projectIdentifier", identifier);
 	        return query.getSingleResult();
 	  }
-
-	  public void delete(Backlog backlog) {
-	    entityManager.remove(backlog);
-	  }
+	
+		@Override
+		@Transactional
+		public void delete(Backlog backlog) {
+			entityManager.remove(backlog);
+		}
 
 	}

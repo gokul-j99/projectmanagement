@@ -10,6 +10,9 @@ import java.util.Map;
 
 import javax.validation.Valid;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,6 +51,9 @@ public class ProjectController {
 	private MapValidationErrorService mapValidationErrorService;
 	
 	@PostMapping("/")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
+})
 	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project proj,BindingResult result){
 		
 		ResponseEntity<?> errorMAp = mapValidationErrorService.MapValidationErrorService(result);
@@ -65,6 +71,9 @@ public class ProjectController {
 	}
 	
 	@GetMapping("/{id}")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
+})
 	public ResponseEntity<?> getProject(@PathVariable String id){
 		
 		Project proj = projectService.findProjectByIdentifier(id);
@@ -76,6 +85,9 @@ public class ProjectController {
 	}
 	
 	 @DeleteMapping("/{id}")
+	 @ApiImplicitParams({
+	        @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
+	})
 	    public ResponseEntity<?>  deleteProject(@PathVariable String id){
 		 
 		 projectService.deleteProjectByIdentifier(id);

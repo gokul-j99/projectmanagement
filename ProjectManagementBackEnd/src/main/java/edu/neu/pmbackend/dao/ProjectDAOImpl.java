@@ -4,7 +4,13 @@ package edu.neu.pmbackend.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Component;
@@ -59,38 +65,39 @@ public class ProjectDAOImpl implements ProjectDAO {
 
 	@Override
 	@Transactional
-	public void deleteById(Integer id) {
+	public void deleteById(String id) {
 		//Session session = sessionFactory.openSession();
 		// TODO Auto-generated method stub
 		System.out.println("Inside dao");
+		Query query1 = entityManager.createNativeQuery("DELETE FROM Backlog WHERE project_identifier = :projectIdentifier");
+		query1.setParameter("projectIdentifier", id);
+		query1.executeUpdate();
 		//System.out.println(id);
-		TypedQuery<Project> query = entityManager.createQuery("SELECT p FROM Project p WHERE p.id = :id", Project.class);
+		Query query = entityManager.createNativeQuery("DELETE FROM Project WHERE project_identifier = :id");
         query.setParameter("id", id);
         System.out.println(query);
-        Project proj = query.getSingleResult();
-		System.out.println(proj);
-      if (proj != null) {
-    	  System.out.println("Inside if");
-    	  entityManager.remove(proj);
-      }
+        query.executeUpdate();
 		
 	}  
 	
 	@Transactional
 	@Override
-	public Project update(Project user) {
+	public Project update(Project project) {
 		
 		System.out.println("Inside update");
 		Project mergedProject;
-		System.out.println(user);
-		if(user.getId() != null) {
+		System.out.println(project);
+		if(project.getId() != null) {
 			System.out.println("Inside if update");
-		mergedProject = entityManager.merge(user);
+			ZoneId estZoneId = ZoneId.of("America/New_York");
+			 ZonedDateTime estNow = LocalDateTime.now().atZone(estZoneId);
+			 project.setUpdated_At(Date.from(estNow.toInstant()) );
+		mergedProject = entityManager.merge(project);
 			
 		}
 		else {
-			mergedProject = user;
-		entityManager.persist(user);
+			mergedProject = project;
+		entityManager.persist(project);
 		}
 		
         

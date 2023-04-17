@@ -22,4 +22,6 @@ public interface StoryDAO {
 
 	 void delete(Story story);
 
+	Story update(Story story);
+
 }

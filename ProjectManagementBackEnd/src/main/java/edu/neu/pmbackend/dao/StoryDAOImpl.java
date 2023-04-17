@@ -9,13 +9,19 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
+import org.springframework.stereotype.Component;
+
+import edu.neu.pmbackend.entity.Project;
 import edu.neu.pmbackend.entity.Story;
 
 /**
  * @author gokuljayavel
  *
  */
+
+@Component
 public class StoryDAOImpl implements StoryDAO{
 	
 	@PersistenceContext
@@ -24,7 +30,7 @@ public class StoryDAOImpl implements StoryDAO{
     @Override
     public List<Story> findByProjectIdentifierOrderByPriority(String id) {
         TypedQuery<Story> query = entityManager.createQuery(
-                "SELECT pt FROM ProjectTask pt WHERE pt.projectIdentifier = :id ORDER BY pt.priority",
+                "SELECT pt FROM Story pt WHERE pt.projectIdentifier = :id ORDER BY pt.priority",
                 Story.class);
         query.setParameter("id", id);
         return query.getResultList();
@@ -33,7 +39,7 @@ public class StoryDAOImpl implements StoryDAO{
     @Override
     public Story findByProjectSequence(String sequence) {
         TypedQuery<Story> query = entityManager.createQuery(
-                "SELECT pt FROM ProjectTask pt WHERE pt.projectSequence = :sequence",
+                "SELECT pt FROM Story pt WHERE pt.projectSequence = :sequence",
                 Story.class);
         query.setParameter("sequence", sequence);
         try {
@@ -45,6 +51,7 @@ public class StoryDAOImpl implements StoryDAO{
     
     
     @Override
+    @Transactional
     public Story save(Story projectTask) {
         if (projectTask.getId() == null) {
             entityManager.persist(projectTask);
@@ -55,8 +62,18 @@ public class StoryDAOImpl implements StoryDAO{
     }
 
     @Override
+    @Transactional
     public void delete(Story projectTask) {
         entityManager.remove(projectTask);
+    }
+    
+    
+    @Transactional
+	@Override
+	public Story update(Story story) {
+		System.out.println("Inside update");
+		entityManager.merge(story);
+        return story;
     }
 
 }

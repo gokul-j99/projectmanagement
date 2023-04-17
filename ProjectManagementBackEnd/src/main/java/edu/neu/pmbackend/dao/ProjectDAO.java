@@ -16,7 +16,7 @@ public interface ProjectDAO {
 
     Project save(Project project);
 
-    void deleteById(Integer id);
+    void deleteById(String id);
     
     public Project update(Project user);
     

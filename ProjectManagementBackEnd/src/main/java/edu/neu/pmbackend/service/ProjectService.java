@@ -93,8 +93,9 @@ public class ProjectService {
 	public void deleteProjectByIdentifier(String projectId) {
 		try {
 			System.out.println("Inside delete servcie");
-		projectDAO.deleteById(Integer.parseInt(projectId));
+		projectDAO.deleteById(projectId);
 		} catch (Exception e) {
+			
 			e.printStackTrace();
 		}
 		
