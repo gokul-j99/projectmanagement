@@ -3,6 +3,8 @@
  */
 package edu.neu.pmbackend.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -16,8 +18,9 @@ import org.hibernate.Session;
 //import org.hibernate.cfg.Configuration;
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import javax.transaction.Transactional;
 
+import edu.neu.pmbackend.entity.Project;
 import edu.neu.pmbackend.entity.User;
 
 /**
@@ -37,9 +40,12 @@ public class UserDAOImpl implements UserDAO{
     @Override
 	public User findByUsername(String username) {
     //	Session session = sessionFactory.openSession();
+    	
+    	System.out.println(" before persist username");
 
 		TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
        query.setParameter("username", username);
+       System.out.println(" after persist username");
         return query.getResultList().stream().findFirst().orElse(null);
 	}
 
@@ -58,6 +64,13 @@ public class UserDAOImpl implements UserDAO{
 	        System.out.println("after persist");
 	        return user;
 	    }
+
+		@Override
+		public List<User> fetchUserByManagerid(Long id) {
+			TypedQuery<User> query = entityManager.createQuery("SELECT  u FROM User u WHERE u.manager_id = :manager_id", User.class);
+			query.setParameter("manager_id",id);
+	        return query.getResultList();
+		}
 	
 
 }

@@ -35,6 +35,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class TeamMember implements UserDetails{
 	
 	
+	private static final long serialVersionUID = 1565131668683005318L;
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

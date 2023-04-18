@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,13 +86,34 @@ public class UserController {
 	}
 	
 	
+	@PostMapping("/register/{manager_id}")
+	public ResponseEntity<?> registerTeamMember(@Valid @RequestBody User user, BindingResult result,@PathVariable Long  manager_id) {
+		// Validate passwords match
+		
+		user.setConfirmPassword(user.getPassword());
+		user.setManager_id(manager_id);
+
+		userValidator.validate(user, result);
+
+		ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationErrorService(result);
+		if (errorMap != null) {
+			return errorMap;
+		}
+
+		User newUser = userService.saveUser(user);
+
+		return new ResponseEntity<User>(newUser, HttpStatus.CREATED);
+
+	}
+	
+	
 	 @PostMapping("/login")
 	    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDTO loginRequest, BindingResult result){
 		 System.out.println("before error map");
 		 log.info("before the error map",loginRequest);
 	        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationErrorService(result);
 	        if(errorMap != null) return errorMap;
-	        	System.out.println("agter error map");
+	        	System.out.println("after error map");
 	      //  	log.info("after the error map");
 	        Authentication authentication = authenticationManager.authenticate(
 	                new UsernamePasswordAuthenticationToken(
@@ -99,11 +121,14 @@ public class UserController {
 	                        loginRequest.getPassword()
 	                )
 	        );
+	        System.out.println("after authentication");
 	        System.out.println(authentication.getDetails());
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
 	        String jwt = SecurityConstant.TOKEN_PREFIX +  jwtTokenProvider.generateToken(authentication);
+	        
+	        User user = userService.fetchbyuserName(loginRequest.getUsername());
 
-	        return ResponseEntity.ok(new JWTLoginSuccessDTO(true, jwt));
+	        return ResponseEntity.ok(new JWTLoginSuccessDTO(true, jwt,user));
 	    }
 	
 	

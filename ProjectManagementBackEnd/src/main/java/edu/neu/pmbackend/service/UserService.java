@@ -3,17 +3,19 @@
  */
 package edu.neu.pmbackend.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import edu.neu.pmbackend.dao.UserDAO;
 import edu.neu.pmbackend.dao.UserDAOImpl;
+import edu.neu.pmbackend.entity.TeamMember;
 import edu.neu.pmbackend.entity.User;
 import edu.neu.pmbackend.exception.UserNameALreadyExistException;
 
@@ -51,16 +53,40 @@ public class UserService {
 			e.printStackTrace();
 			
 			throw new UserNameALreadyExistException("Username " + user.getUsername() + " already exist");
-		}
-
-		
-		
+		}	
 		
 	}
-
-
-
-
+	
+	
+	public User fetchbyuserName(String userName) {
+		
+		
+		try {
+			
+			User user = userDao.findByUsername(userName);
+			return user;
+			
+		} catch (Exception e) {
+			throw new UserNameALreadyExistException("Username " + userName+ " doesn't  exist");
+		}
+		
+	}
+	
+	
+	public List<User> fetchbyManager_id(Long id ){
+		
+		
+		try {
+			
+			List<User> users = userDao.fetchUserByManagerid(id);
+			
+			return users;
+			
+		} catch (Exception e) {
+			throw new UserNameALreadyExistException("Manager " + id+ " doesn't  exist");
+		}
+		
+	}
 	
 
 }

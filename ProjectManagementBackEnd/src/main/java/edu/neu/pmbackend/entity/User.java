@@ -47,10 +47,10 @@ public class User implements UserDetails{
 	    @Column(unique = true)
 	    private String username;
 	    @NotBlank(message = "Please enter your full name")
+	    @Column(name = "full_name")
 	    private String fullName;
 	    
 	    @NotBlank(message = "Password field is required")
-	    //@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$", message = "Password must contain at least 8 characters, one letter, one number, and one special character")
 	    private String password;
 	    @Transient
 	    private String confirmPassword;
@@ -59,15 +59,18 @@ public class User implements UserDetails{
 	    @Column(name = "role", columnDefinition = "varchar(25) default 'Manager'")
 	    private String role;
 	    
-	    
+	    @JsonIgnore
 	    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
 	    private List<Project> projects = new ArrayList<>();
 	    
+	    private Long manager_id;
 	    
 	    
-	    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "manager", orphanRemoval = true)
-	    private List<TeamMember> teammembers = new ArrayList<>();
 	    
+	    
+//	    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "manager", orphanRemoval = true)
+//	    private List<TeamMember> teammembers = new ArrayList<>();
+//	    
 	    
 		/**
 		 * @return the id
@@ -165,6 +168,31 @@ public class User implements UserDetails{
 		 */
 		public void setRole(String role) {
 			this.role = role;
+		}
+		
+		/**
+		 * @return the projects
+		 */
+		public List<Project> getProjects() {
+			return projects;
+		}
+		/**
+		 * @param projects the projects to set
+		 */
+		public void setProjects(List<Project> projects) {
+			this.projects = projects;
+		}
+		/**
+		 * @return the manager_id
+		 */
+		public Long getManager_id() {
+			return manager_id;
+		}
+		/**
+		 * @param manager_id the manager_id to set
+		 */
+		public void setManager_id(Long manager_id) {
+			this.manager_id = manager_id;
 		}
 		@PrePersist
 		 protected void onCreate(){

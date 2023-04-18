@@ -28,12 +28,14 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "Project name is required")
+    @Column(name = "project_name")
     private String projectName;
     @NotBlank(message = "Project identifier is required")
     @Size(min=4, max = 5, message = "Please use 4 to 5 characters")
-    @Column(updatable = false,unique = true)
+    @Column(name = "project_identifier",updatable = false,unique = true)
     private String projectIdentifier;
     @NotBlank(message = "Project description is required")
+    @Column(name = "description")
     private String description;
 
     public String getDescription() {
@@ -58,7 +60,7 @@ public class Project {
     private Backlog backlog;
 
     //json ignore necessary because otherwise backlogs are also fetched if project is to be updated.
-
+    @Column(name = "project_leader")
     private String projectLeader;
 
     /**

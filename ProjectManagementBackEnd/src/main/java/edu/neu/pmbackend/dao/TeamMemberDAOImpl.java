@@ -14,11 +14,7 @@ import edu.neu.pmbackend.entity.TeamMember;
  *
  */
 public class TeamMemberDAOImpl implements TeammemberDAO{
-	
-	
-	
-	
-	
+
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -27,7 +23,7 @@ public class TeamMemberDAOImpl implements TeammemberDAO{
 	public TeamMember findByUsername(String username) {
 		
 
-		TypedQuery<TeamMember> query = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", TeamMember.class);
+		TypedQuery<TeamMember> query = entityManager.createQuery("SELECT u FROM TeamMember u WHERE u.username = :username", TeamMember.class);
        query.setParameter("username", username);
         return query.getResultList().stream().findFirst().orElse(null);
 	}
