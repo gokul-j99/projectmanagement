@@ -17,6 +17,7 @@ import edu.neu.pmbackend.entity.Backlog;
 import edu.neu.pmbackend.entity.Project;
 import edu.neu.pmbackend.entity.Story;
 import edu.neu.pmbackend.exception.ProjectIdException;
+import edu.neu.pmbackend.exception.ProjectNotFoundException;
 /**
  * @author gokuljayavel
  *
@@ -37,9 +38,9 @@ public class StoryService {
 	
 	
 	
-	public Story addStory(String projectIdentifier, Story story) {
+	public Story addStory(String projectIdentifier, Story story, String user) {
 		
-		Backlog backl = prservice.findProjectByIdentifier(projectIdentifier).getBacklog();
+		Backlog backl = prservice.findProjectByIdentifier(projectIdentifier, user).getBacklog();
 		
 		 story.setBacklog(backl);
 		 
@@ -67,11 +68,11 @@ public class StoryService {
 		
 	}
 	
-	public Iterable<Story> getStoryById(String project_id){
+	public Iterable<Story> getStoryById(String project_id, String user){
 		
 	try {
 		
-			Project pr = prservice.findProjectByIdentifier(project_id);
+			Project pr = prservice.findProjectByIdentifier(project_id, user);
 
 			if(pr==null){
 	            throw new ProjectIdException("ProjectID " + project_id + " doesn't exists");
@@ -87,11 +88,19 @@ public class StoryService {
 		
 	}
 	
-	public Story findStoryProjectSequence(String project_id, String story_id) {
+	public Story findStoryProjectSequence(String project_id, String story_id, String user) {
 		
-		prservice.findProjectByIdentifier(project_id);
+		prservice.findProjectByIdentifier(project_id, user);
 		
 		Story st = storyDAO.findByProjectSequence(story_id);
+		
+		if(st == null) {
+			throw new ProjectNotFoundException("Story '"+story_id+"' not found");
+		}
+		
+		if(!st.getProjectIdentifier().equals(project_id) ) {
+			throw new ProjectNotFoundException("Story '"+story_id+"' does not exist in project: '"+project_id);
+		}
 		
 		return st;
 
@@ -99,8 +108,8 @@ public class StoryService {
 	}
 	
 	
-	 public Story updateByProjectSequence(Story updatedTask, String project_id, String story_id){
-		 Story projectTask = findStoryProjectSequence(project_id, story_id);
+	 public Story updateByProjectSequence(Story updatedTask, String project_id, String story_id, String user){
+		 Story projectTask = findStoryProjectSequence(project_id, story_id,user);
 		 
 		 updatedTask.setBacklog(projectTask.getBacklog());
 		 System.out.println(new Date());
@@ -112,9 +121,9 @@ public class StoryService {
 	    }
 	 
 	 
-	 public void deleteStory(String project_id, String story_id) {
+	 public void deleteStory(String project_id, String story_id, String user) {
 		 
-		 Story projectTask = findStoryProjectSequence(project_id, story_id);
+		 Story projectTask = findStoryProjectSequence(project_id, story_id, user);
 		 
 		 Backlog back = projectTask.getBacklog();
 		  List<Story> stories = back.getProjectTasks();

@@ -54,7 +54,7 @@ public class ProjectController {
 	@ApiImplicitParams({
         @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
 })
-	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project proj,BindingResult result){
+	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project proj,BindingResult result, Principal pr){
 		
 		ResponseEntity<?> errorMAp = mapValidationErrorService.MapValidationErrorService(result);
 		
@@ -63,20 +63,20 @@ public class ProjectController {
 		}
 		
 		System.out.println("inside controller");
-		projectService.saveorUpdate(proj);
+		projectService.saveorUpdate(proj, pr.getName());
 		
 		return new ResponseEntity<Project>(proj, HttpStatus.CREATED);
 		
 		
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/projectid/{id}")
 	@ApiImplicitParams({
         @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
 })
-	public ResponseEntity<?> getProject(@PathVariable String id){
+	public ResponseEntity<?> getProject(@PathVariable String id, Principal pr){
 		
-		Project proj = projectService.findProjectByIdentifier(id);
+		Project proj = projectService.findProjectByIdentifier(id, pr.getName());
 		
 		return new ResponseEntity<Project>(proj, HttpStatus.OK);
 		
@@ -88,11 +88,23 @@ public class ProjectController {
 	 @ApiImplicitParams({
 	        @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
 	})
-	    public ResponseEntity<?>  deleteProject(@PathVariable String id){
+	    public ResponseEntity<?>  deleteProject(@PathVariable String id, Principal pr){
 		 
-		 projectService.deleteProjectByIdentifier(id);
+		 projectService.deleteProjectByIdentifier(id, pr.getName());
 		 
 		 return new ResponseEntity<String>("Project with ID " + id + " deleted", HttpStatus.OK);
+	 }
+	 
+	 
+	 @GetMapping("/{user_id}")
+	 
+	 public Iterable<Project> getProject(@PathVariable Long user_id, Principal pr){
+		 
+		 System.out.println("Inside all project");
+		 
+		 return projectService.getAllProject(user_id);
+		 
+		 
 	 }
 	
 

@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 
 @Entity
+@Table(name = "project")
 public class Project {
 	
 	
@@ -38,22 +39,16 @@ public class Project {
     @Column(name = "description")
     private String description;
 
-    public String getDescription() {
-        return description;
-    }
+   
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @JsonFormat(pattern = "yyyy-mm-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date start_date;
-    @JsonFormat(pattern = "yyyy-mm-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date end_date;
-    @JsonFormat(pattern = "yyyy-mm-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(updatable = false)
     private Date created_At;
-    @JsonFormat(pattern = "yyyy-mm-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date updated_At;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
     @JsonIgnore
@@ -62,6 +57,10 @@ public class Project {
     //json ignore necessary because otherwise backlogs are also fetched if project is to be updated.
     @Column(name = "project_leader")
     private String projectLeader;
+    
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private User user;
 
     /**
 	 * @return the projectLeader
@@ -77,9 +76,7 @@ public class Project {
 		this.projectLeader = projectLeader;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    private User user;
+
 	
 	
 	/**
@@ -111,7 +108,13 @@ public class Project {
 	}
 
 
-	
+	 public String getDescription() {
+	        return description;
+	    }
+
+	  public void setDescription(String description) {
+	        this.description = description;
+	    }
 	
 	
 	
@@ -236,12 +239,5 @@ public class Project {
 				+ ", created_At=" + created_At + ", updated_At=" + updated_At 
 				+ ", projectLeader=" + projectLeader + ", user=" + user + "]";
 	}
-	
-	
-	
-	
-	
-	
-	
 
 }

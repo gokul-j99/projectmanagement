@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +27,11 @@ import edu.neu.pmbackend.service.MapValidationErrorService;
 import edu.neu.pmbackend.service.UserService;
 import edu.neu.pmbackend.validator.UserValidator;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import edu.neu.pmbackend.dto.JWTLoginSuccessDTO;
 import edu.neu.pmbackend.dto.LoginRequestDTO;
+import edu.neu.pmbackend.entity.Story;
 import edu.neu.pmbackend.entity.User;
 import edu.neu.pmbackend.security.JWTTokenProvider;
 import edu.neu.pmbackend.security.SecurityConstant;
@@ -105,6 +109,13 @@ public class UserController {
 		return new ResponseEntity<User>(newUser, HttpStatus.CREATED);
 
 	}
+	
+	 @GetMapping("/{manager_id}")
+	
+	    public Iterable<User> getListOfStory(@PathVariable Long manager_id){
+		 
+		  return userService.fetchbyManager_id(manager_id);
+	    }
 	
 	
 	 @PostMapping("/login")

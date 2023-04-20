@@ -31,16 +31,21 @@ public class Story {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(updatable = false, unique = true)
+	@Column(name = "project_sequence" ,updatable = false, unique = true)
 	private String projectSequence;
 	@NotBlank(message = "Please include a project summary")
+	@Column(name = "summary")
 	private String summary;
+	@Column(name = "acceptance_criteria")
 	private String acceptanceCriteria;
+	@Column(name = "status")
 	private StoryStatus status;
+	@Column(name = "priority")
 	private Integer priority;
-	@JsonFormat(pattern = "yyyy-mm-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	@Column(name = "due_date")
 	private Date dueDate;
-
+	@Column(name = "story_type")
 	private String storyType;
 
 	// ManyToOne with Backlog
@@ -49,12 +54,13 @@ public class Story {
 	@JsonIgnore
 	private Backlog backlog;
 
-	@Column(updatable = false)
+	@Column(name = "project_identifier",updatable = false)
 	private String projectIdentifier;
-	@JsonFormat(pattern = "yyyy-mm-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	@Column(name = "create_at")
 	private Date create_At;
-	//@JsonFormat(pattern = "yyyy-mm-dd")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	@Column(name = "update_at")
 	private Date update_At;
 
 	public Story() {

@@ -16,6 +16,12 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import edu.neu.pmbackend.entity.Project;
+import edu.neu.pmbackend.entity.User;
+
+/**
+ * @author gokuljayavel
+ *
+ */
 
 @Component
 public class ProjectDAOImpl implements ProjectDAO {
@@ -30,7 +36,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     }
 
     @Override
-    public List<Project> findAllById(Iterable<Long> ids) {
+    public List<Project> findAllById(Long ids) {
     //	Session session = sessionFactory.openSession();
     	TypedQuery<Project> query = entityManager.createQuery("SELECT p FROM Project p WHERE p.id IN :ids", Project.class);
         query.setParameter("ids", ids);
@@ -39,8 +45,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 
     @Override
     public Project findByProjectIdentifier(String projectIdentifier) {
-    //	Session session = sessionFactory.openSession();
-    	System.out.println("Inside projid");
     	TypedQuery<Project> query = entityManager.createQuery("SELECT p FROM Project p WHERE p.projectIdentifier = :projectIdentifier", Project.class);
         query.setParameter("projectIdentifier", projectIdentifier);
         return query.getSingleResult();
@@ -104,5 +108,22 @@ public class ProjectDAOImpl implements ProjectDAO {
         entityManager.flush();
         return mergedProject;
     }
+
+	@Override
+	public List<Project> findAllByUserid(Long user_id) {
+		System.out.println("Before getting all project");
+		System.out.println(user_id);
+		
+		String hql = "SELECT p FROM Project p WHERE p.user.id = :userId";
+		Query query = entityManager.createQuery(hql);
+		query.setParameter("userId", user_id);
+		@SuppressWarnings("unchecked")
+		List<Project> projects = query.getResultList();
+		
+//		TypedQuery<Project> query = entityManager.createQuery("SELECT p FROM Project p WHERE p.user = :user_id", Project.class);
+//        query.setParameter("user_id", user_id);
+//        System.out.println(query.getParameter("user_id")); 
+        return projects;
+	}
     
 }

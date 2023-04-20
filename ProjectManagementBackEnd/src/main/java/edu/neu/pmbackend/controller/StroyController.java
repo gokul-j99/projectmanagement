@@ -52,14 +52,14 @@ public class StroyController {
 })
 	public ResponseEntity<?> addStory(@Valid @RequestBody Story story,
             BindingResult result,
-            @PathVariable String project_id){
+            @PathVariable String project_id, Principal pr){
 		
 		ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationErrorService(result);
 		
 		if(errorMap!=null)
             return errorMap;
 		
-		Story addedStory = storyService.addStory(project_id, story);
+		Story addedStory = storyService.addStory(project_id, story, pr.getName());
 		
 		
 		return new ResponseEntity<Story>(addedStory, HttpStatus.CREATED);
@@ -72,9 +72,9 @@ public class StroyController {
 	 @ApiImplicitParams({
 	        @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
 	})
-	    public Iterable<Story> getListOfStory(@PathVariable String project_id){
+	    public Iterable<Story> getListOfStory(@PathVariable String project_id, Principal pr){
 		 
-		  return storyService.getStoryById(project_id);
+		  return storyService.getStoryById(project_id, pr.getName());
 	    }
 	 
 	 
@@ -82,8 +82,8 @@ public class StroyController {
 	  @ApiImplicitParams({
 	        @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
 	})
-	    public ResponseEntity<?> getProjectStoryById(@PathVariable String project_id, @PathVariable String story_id, Principal principal){
-		  Story story = storyService.findStoryProjectSequence(project_id, story_id);
+	    public ResponseEntity<?> getProjectStoryById(@PathVariable String project_id, @PathVariable String story_id, Principal pr){
+		  Story story = storyService.findStoryProjectSequence(project_id, story_id, pr.getName());
 	        return new ResponseEntity<Story>( story, HttpStatus.OK);
 	    }
 	  
@@ -94,12 +94,12 @@ public class StroyController {
 	})
 	    public ResponseEntity<?> updateProjectStory(@Valid @RequestBody Story projectTask, BindingResult result,
 	                                               @PathVariable String project_id, @PathVariable String story_id,
-	                                               Principal principal){
+	                                               Principal pr){
 
 	        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationErrorService(result);
 	        if (errorMap != null) return errorMap;
 
-	        Story updatedTask = storyService.updateByProjectSequence(projectTask,project_id,story_id);
+	        Story updatedTask = storyService.updateByProjectSequence(projectTask,project_id,story_id, pr.getName());
 
 	        return new ResponseEntity<Story>(updatedTask,HttpStatus.OK);
 
@@ -110,8 +110,8 @@ public class StroyController {
 	    @ApiImplicitParams({
 	        @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
 	})
-	    public ResponseEntity<?> deleteProjectStory(@PathVariable String project_id, @PathVariable String story_id, Principal principal){
-	        storyService.deleteStory(project_id, story_id);
+	    public ResponseEntity<?> deleteProjectStory(@PathVariable String project_id, @PathVariable String story_id, Principal pr){
+	        storyService.deleteStory(project_id, story_id, pr.getName());
 
 	        return new ResponseEntity<String>("Story "+story_id+" was deleted successfully", HttpStatus.OK);
 	    }
