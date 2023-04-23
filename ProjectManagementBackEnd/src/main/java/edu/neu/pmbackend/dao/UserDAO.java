@@ -18,4 +18,5 @@ public interface UserDAO {
 	 User getById(Long id);
 	 User save(User user);
 	 List<User>fetchUserByManagerid(Long id);
+	 void deleteById(Long id);
 }

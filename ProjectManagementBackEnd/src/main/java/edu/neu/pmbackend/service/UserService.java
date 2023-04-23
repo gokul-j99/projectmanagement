@@ -88,5 +88,10 @@ public class UserService {
 		
 	}
 	
+	public void deleteUserByid(Long id) {
+		
+		userDao.deleteById(id);
+	}
+	
 
 }

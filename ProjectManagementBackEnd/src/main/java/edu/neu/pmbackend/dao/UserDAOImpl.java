@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.SessionFactory;
@@ -70,6 +71,14 @@ public class UserDAOImpl implements UserDAO{
 			TypedQuery<User> query = entityManager.createQuery("SELECT  u FROM User u WHERE u.manager_id = :manager_id", User.class);
 			query.setParameter("manager_id",id);
 	        return query.getResultList();
+		}
+
+		@Override
+		public void deleteById(Long id) {
+			
+			Query query = entityManager.createNativeQuery("DELETE FROM User WHERE id = :id");
+	        query.setParameter("id", id);
+	        query.executeUpdate();
 		}
 	
 

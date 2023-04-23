@@ -4,6 +4,8 @@
 package edu.neu.pmbackend.controller;
 
 
+import java.security.Principal;
+
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -140,6 +143,14 @@ public class UserController {
 	        User user = userService.fetchbyuserName(loginRequest.getUsername());
 
 	        return ResponseEntity.ok(new JWTLoginSuccessDTO(true, jwt,user));
+	    }
+	 
+	    @DeleteMapping("/{user_id}")
+	    
+	    public ResponseEntity<?> deleteProjectStory(@PathVariable Long user_id, Principal pr){
+	       userService.deleteUserByid(user_id);
+
+	        return new ResponseEntity<String>("User "+user_id+" was deleted successfully", HttpStatus.OK);
 	    }
 	
 	
