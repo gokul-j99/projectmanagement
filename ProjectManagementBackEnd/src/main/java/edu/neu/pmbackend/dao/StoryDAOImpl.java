@@ -3,13 +3,17 @@
  */
 package edu.neu.pmbackend.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.stereotype.Component;
 
@@ -75,5 +79,38 @@ public class StoryDAOImpl implements StoryDAO{
 		entityManager.merge(story);
         return story;
     }
+
+	@Override
+	public List<Story> findByProjectIdentifierDev(String id) {
+        TypedQuery<Story> query = entityManager.createQuery(
+                "SELECT pt FROM Story pt WHERE pt.projectIdentifier = :id and pt.storyType = :storytype  ORDER BY pt.priority",
+                Story.class);
+        query.setParameter("storytype", "Dev");
+        query.setParameter("id", id);
+        return query.getResultList();
+	}
+
+	@Override
+	@Transactional
+	public List<Story> findByDueDate(Date date) {
+		
+		
+		String hql = "SELECT pt FROM Story pt";
+		Date today = new Date();
+		Query query = entityManager.createQuery(hql, Story.class);
+		//query.setParameter("today", date, TemporalType.DATE);
+		List<Story> stories = query.getResultList();
+		
+		System.out.println(stories);
+
+		// TODO Auto-generated method stub
+//		
+//		System.out.println(date);
+//        TypedQuery<Story> query = entityManager.createQuery(
+//                "SELECT pt FROM Story pt WHERE pt.dueDate = :tomorrow",
+//                Story.class);
+//        query.setParameter("tomorrow", date);
+        return stories;
+	}
 
 }

@@ -8,6 +8,7 @@ import edu.neu.pmbackend.security.SecurityConstant;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Enumeration;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -49,10 +50,16 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 				Long id = tokenprovider.getUserIdFromJWT(jwt);
 				User user = customService.loadUserbyId(id);
 				
+				System.out.println("Got user from db");
+				System.out.println(user);
+				
 				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user , 
 						null, Collections.emptyList());
 				
+				
 				auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				
+				System.out.println(auth.getDetails());
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
 			
@@ -62,7 +69,15 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 			
 		}
 		
-		filterChain.doFilter(request, response);
+		
+		try {
+			filterChain.doFilter(request, response);
+			System.out.println(filterChain);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
 		
 	}
 	

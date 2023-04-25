@@ -58,10 +58,15 @@ public class ProjectService {
 		
 		try {
 			User user = userDao.findByUsername(userName);
+			
+			if(!user.getRole().equals("Manager")) {
+				throw new ProjectNotFoundException("You don't have acces to create project");
+			}
+			
 			project.setUser(user);
 			project.setProjectLeader(userName);
 			
-			
+			System.out.println(project);
 			project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
 			
 			if(project.getId()==null){
@@ -78,8 +83,14 @@ public class ProjectService {
 			}
 			
 			 return projectDAO.update(project);
-			//return projectRepositry.save(project);
-		} catch (Exception e) {
+		}
+		
+		catch (ProjectNotFoundException e) {
+		    throw e;
+		} 
+		
+		
+		catch (Exception e) {
 			e.printStackTrace();
 			throw new ProjectIdException("projectid" + project.getProjectIdentifier() + "already exist");
 		}
@@ -90,15 +101,22 @@ public class ProjectService {
 	   public Project findProjectByIdentifier(String projectId, String userName){
 
 		   Project project = projectDAO.findByProjectIdentifier(projectId.toUpperCase());
+		   
+		   User user = userDao.findByUsername(userName);
 
 	        //if no project with projectID was found
 	        if(project==null){
 	            throw new ProjectIdException("ProjectID " + projectId + " doesn't exists");
 	        }
-
-	        if(!project.getProjectLeader().equals(userName)){
-	            throw new ProjectNotFoundException("Project not found in your account");
+	        
+	        if (user.getRole().equals("Manager")) {
+	        	  if(!project.getProjectLeader().equals(userName)){
+	  	            throw new ProjectNotFoundException("Project not found in your account");
+	  	        }
+	        	
 	        }
+
+	      
 
 
 	        return project;
@@ -107,12 +125,25 @@ public class ProjectService {
 	public void deleteProjectByIdentifier(String projectId, String user) {
 		try {
 			
+			User userD = userDao.findByUsername(user);
+			
+			
+			if(!userD.getRole().equals("Manager")) {
+				throw new ProjectNotFoundException("You don't have acces to delete project");
+			}
+			
 			findProjectByIdentifier(projectId, user);
 			
 			System.out.println("Inside delete servcie");
 		projectDAO.deleteById(projectId);
 		
-		} catch (Exception e) {
+		} 
+		
+		catch (ProjectNotFoundException e) {
+		    throw e;
+		} 
+		
+		catch (Exception e) {
 			
 			e.printStackTrace();
 		}
@@ -131,9 +162,6 @@ public class ProjectService {
 		if(user.getRole().equals("Manager")) {
 			System.out.println("Inside manager");
 			return projectDAO.findAllByUserid(user_id);
-		}
-		else {
-			//user = userDao.getById(user.getManager_id());
 		}
 		System.out.println(user);
 		return projectDAO.findAllByUserid(user.getManager_id());

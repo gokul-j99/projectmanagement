@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.neu.pmbackend.entity.Story;
 import edu.neu.pmbackend.service.MapValidationErrorService;
 import edu.neu.pmbackend.service.StoryService;
+import edu.neu.pmbackend.validator.StoryValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -44,6 +45,10 @@ public class StroyController {
 	private StoryService storyService;
 	
 	@Autowired
+	private StoryValidator storyValidator;
+	
+	
+	@Autowired
 	private MapValidationErrorService mapValidationErrorService;
 	
 	@PostMapping("/{project_id}")
@@ -53,6 +58,8 @@ public class StroyController {
 	public ResponseEntity<?> addStory(@Valid @RequestBody Story story,
             BindingResult result,
             @PathVariable String project_id, Principal pr){
+		
+		storyValidator.validate(story, result);
 		
 		ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationErrorService(result);
 		
@@ -95,6 +102,9 @@ public class StroyController {
 	    public ResponseEntity<?> updateProjectStory(@Valid @RequestBody Story projectTask, BindingResult result,
 	                                               @PathVariable String project_id, @PathVariable String story_id,
 	                                               Principal pr){
+		  
+		  
+		  storyValidator.validate(projectTask, result);
 
 	        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationErrorService(result);
 	        if (errorMap != null) return errorMap;
@@ -115,6 +125,18 @@ public class StroyController {
 
 	        return new ResponseEntity<String>("Story "+story_id+" was deleted successfully", HttpStatus.OK);
 	    }
+	    
+	    
+		 @GetMapping("/dev/{project_id}")
+		 @ApiImplicitParams({
+		        @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
+		})
+		    public Iterable<Story> getListOfDevStory(@PathVariable String project_id, Principal pr){
+			 
+			  return storyService.getDevStoryById(project_id, pr.getName());
+			  
+		 }
+		    
 	 
 	
 

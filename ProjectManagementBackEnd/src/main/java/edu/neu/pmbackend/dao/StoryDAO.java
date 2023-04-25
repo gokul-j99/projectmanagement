@@ -3,6 +3,7 @@
  */
 package edu.neu.pmbackend.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import edu.neu.pmbackend.entity.Story;
@@ -21,6 +22,11 @@ public interface StoryDAO {
 	 Story save(Story story);
 
 	 void delete(Story story);
+	 
+	 List<Story> findByProjectIdentifierDev(String id);
+	 
+	 List<Story> findByDueDate(Date date);
+	 
 
 	Story update(Story story);
 

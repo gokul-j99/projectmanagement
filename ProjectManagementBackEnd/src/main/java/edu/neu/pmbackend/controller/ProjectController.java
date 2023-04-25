@@ -30,22 +30,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.neu.pmbackend.entity.Project;
+import edu.neu.pmbackend.entity.Story;
 import edu.neu.pmbackend.service.MapValidationErrorService;
 import edu.neu.pmbackend.service.ProjectService;
+import edu.neu.pmbackend.validator.ProjectValidator;
 
 /**
  * @author gokuljayavel
  *
  */
-//@CrossOrigin
+
 @RestController
 @RequestMapping(value = "/api/project")
-@Api(value = "Project Management", tags = "Project Management")
-//@Validated
+@CrossOrigin(origins = " * ", allowedHeaders = " * ")
+@Api(value = "Project Management project", tags = "Project Management project")
+@Validated
 public class ProjectController {
 	
 	@Autowired
 	private ProjectService projectService;
+	
+	@Autowired
+	private ProjectValidator projectValidator;
 	
 	@Autowired
 	private MapValidationErrorService mapValidationErrorService;
@@ -56,7 +62,11 @@ public class ProjectController {
 })
 	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project proj,BindingResult result, Principal pr){
 		
+		System.out.println(result);
+		
 		ResponseEntity<?> errorMAp = mapValidationErrorService.MapValidationErrorService(result);
+		
+		System.out.println(proj);
 		
 		if (errorMAp != null) {
 			return errorMAp;
@@ -101,11 +111,36 @@ public class ProjectController {
 	 public Iterable<Project> getProject(@PathVariable Long user_id, Principal pr){
 		 
 		 System.out.println("Inside all project");
+		 System.out.println(pr.getName());
 		 
 		 return projectService.getAllProject(user_id);
 		 
 		 
 	 }
+	 
+		@PostMapping("/{user_id}")
+		@ApiImplicitParams({
+	        @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
+	})
+		public ResponseEntity<?> addStory(@Valid @RequestBody Project proj,
+	            BindingResult result,
+	            @PathVariable String user_id, Principal pr){
+			
+			System.out.println("Inside controller project 2nd attempt");
+			
+			projectValidator.validate(proj, result);
+			
+			ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationErrorService(result);
+			
+			if(errorMap!=null)
+	            return errorMap;
+			
+			Project addedStory =projectService.saveorUpdate(proj, pr.getName());
+			
+			
+			return new ResponseEntity<Project>(addedStory, HttpStatus.CREATED);
+			
+		}
 	
 
 }

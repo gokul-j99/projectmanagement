@@ -57,13 +57,11 @@ public class CustomUserService implements UserDetailsService{
 	@Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-        	System.out.println("before username");
-        	System.out.println(entityManager);
-            TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
-            query.setParameter("username", username);
-            User user = query.getSingleResult();
-            System.out.println("In username");
-            return user;
+        	
+        	User user = userDao.findByUsername(username);
+        	System.out.println(user);
+        	return user;
+        	
         } catch (NoResultException e) {
             throw new UsernameNotFoundException("User not found");
         }
@@ -72,7 +70,8 @@ public class CustomUserService implements UserDetailsService{
 	@Transactional
 	public User loadUserbyId  (Long id) {
 		System.out.println("In userid");
-		User user  = entityManager.find(User.class, id);
+		System.out.println(id);
+		User user  = userDao.getById(id);
 		
 		return user;
 	}

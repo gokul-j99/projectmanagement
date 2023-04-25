@@ -3,6 +3,7 @@
  */
 package edu.neu.pmbackend.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,10 @@ public class UserService {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	
+	@Autowired
+	private EmailService email;
+	
+	
 	
 	public User saveUser(User user) {
 		
@@ -43,12 +48,15 @@ public class UserService {
 			if (StringUtils.isEmpty(user.getRole())) {
 	            user.setRole("Manager");
 	        }
+			
 			System.out.println(user);
 			user.setUsername(user.getUsername());
 			user.setConfirmPassword("");
+			
+			
+			email.sendReminderEmail(user.getUsername(), "Registeration mail", "User registered succesfully");
 			return userDao.save(user);
 			
-			//return userRepositry.save(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 			
@@ -78,9 +86,14 @@ public class UserService {
 		
 		try {
 			
-			List<User> users = userDao.fetchUserByManagerid(id);
+			List<User> all_user = new ArrayList<>();
 			
-			return users;
+			User user = userDao.getById(id);
+			all_user.add(user);
+			List<User> users = userDao.fetchUserByManagerid(id);
+			all_user.addAll(users);
+			
+			return all_user;
 			
 		} catch (Exception e) {
 			throw new UserNameALreadyExistException("Manager " + id+ " doesn't  exist");

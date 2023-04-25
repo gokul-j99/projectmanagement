@@ -18,6 +18,7 @@ import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import edu.neu.pmbackend.dto.StoryStatus;
 
@@ -62,6 +63,23 @@ public class Story {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	@Column(name = "update_at")
 	private Date update_At;
+	
+	@Column(columnDefinition="COLUMN_TYPE default '1'")
+	private long user_id;
+
+	/**
+	 * @return the user_id
+	 */
+	public long getUser_id() {
+		return user_id;
+	}
+
+	/**
+	 * @param user_id the user_id to set
+	 */
+	public void setUser_id(long user_id) {
+		this.user_id = user_id;
+	}
 
 	public Story() {
 
@@ -133,9 +151,18 @@ public class Story {
 	/**
 	 * @param status the status to set
 	 */
-	public void setStatus(StoryStatus status) {
-		this.status = status;
-	}
+//	public void setStatus(StoryStatus status) {
+//		this.status = status;
+//	}
+	
+	   @JsonSetter("status")
+	    public void setStatus(String status) {
+	        if (status == null || status.isEmpty()) {
+	            this.status = null; // Set the default value to null
+	        } else {
+	            this.status = StoryStatus.valueOf(status);
+	        }
+	    }
 
 	/**
 	 * @return the priority

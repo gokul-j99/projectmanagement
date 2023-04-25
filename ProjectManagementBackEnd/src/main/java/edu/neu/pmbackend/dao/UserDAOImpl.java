@@ -43,17 +43,22 @@ public class UserDAOImpl implements UserDAO{
     //	Session session = sessionFactory.openSession();
     	
     	System.out.println(" before persist username");
+    	System.out.println(username);
 
 		TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
        query.setParameter("username", username);
        System.out.println(" after persist username");
-        return query.getResultList().stream().findFirst().orElse(null);
+       User user = query.getResultList().stream().findFirst().orElse(null);
+       System.out.println(user);
+        return user;
 	}
 
 	@Override
 	public User getById(Long id) {
 		// TODO Auto-generated method stub
-		 return entityManager.find(User.class, id);
+		User user  =entityManager.find(User.class, id);
+		System.out.println(user);
+		 return user;
 	}
 	
 	  	@Override
