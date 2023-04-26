@@ -67,10 +67,7 @@ public class User implements UserDetails{
 	    
 	    
 	    
-	    
-//	    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "manager", orphanRemoval = true)
-//	    private List<TeamMember> teammembers = new ArrayList<>();
-//	    
+  
 	    
 		/**
 		 * @return the id

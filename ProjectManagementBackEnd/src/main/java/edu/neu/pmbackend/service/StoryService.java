@@ -71,9 +71,9 @@ public class StoryService {
 			 story.setPriority(3);
          }
          //INITIAL status when status is null
-         if(story.getStatus()==null){
-        	 story.setStatus(StoryStatus.TO_DO);
-         }
+//         if(story.getStatus()==null){
+//        	 story.setStatus(StoryStatus.TO_DO);
+//         }
 		
 		
 		

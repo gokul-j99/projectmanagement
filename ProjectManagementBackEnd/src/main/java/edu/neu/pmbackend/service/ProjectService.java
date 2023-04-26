@@ -16,7 +16,9 @@ import edu.neu.pmbackend.dao.ProjectDAOImpl;
 import edu.neu.pmbackend.dao.UserDAOImpl;
 import edu.neu.pmbackend.entity.Backlog;
 import edu.neu.pmbackend.entity.Project;
+import edu.neu.pmbackend.entity.Story;
 import edu.neu.pmbackend.entity.User;
+import edu.neu.pmbackend.exception.ProjectDeleteException;
 import edu.neu.pmbackend.exception.ProjectIdException;
 import edu.neu.pmbackend.exception.ProjectNotFoundException;
 
@@ -39,6 +41,9 @@ public class ProjectService {
 	
 	@Autowired
 	private UserDAOImpl userDao;
+	
+	@Autowired
+	private StoryService storyService;
 	
 	
 	public Project saveorUpdate(Project project, String userName) {
@@ -132,11 +137,21 @@ public class ProjectService {
 				throw new ProjectNotFoundException("You don't have acces to delete project");
 			}
 			
+			List<Story> storylist = (List<Story>) storyService.getStoryById(projectId, user);
+			
+			if(storylist.size() > 0) {
+				throw new ProjectDeleteException("You have existing stories in project delete stories first to delete the project");
+			}
+			
 			findProjectByIdentifier(projectId, user);
 			
 			System.out.println("Inside delete servcie");
 		projectDAO.deleteById(projectId);
 		
+		} 
+		
+		catch (ProjectDeleteException e) {
+		    throw e;
 		} 
 		
 		catch (ProjectNotFoundException e) {

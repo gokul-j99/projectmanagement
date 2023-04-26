@@ -28,14 +28,14 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "Project name is required")
+   // @NotBlank(message = "Project name is required")
     @Column(name = "project_name")
     private String projectName;
-    @NotBlank(message = "Project identifier is required")
-    @Size(min=4, max = 5, message = "Please use 4 to 5 characters")
+  //  @NotBlank(message = "Project identifier is required")
+    //@Size(min=4, max = 5, message = "Please use 4 to 5 characters")
     @Column(name = "project_identifier",updatable = false,unique = true)
     private String projectIdentifier;
-    @NotBlank(message = "Project description is required")
+   // @NotBlank(message = "Project description is required")
     @Column(name = "description")
     private String description;
 

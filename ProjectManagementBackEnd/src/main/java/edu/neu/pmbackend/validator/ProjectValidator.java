@@ -12,6 +12,7 @@ import edu.neu.pmbackend.entity.Project;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 
 /**
@@ -31,6 +32,8 @@ public class ProjectValidator implements Validator{
 	@Override
 	public void validate(Object target, Errors errors) {
 		
+		Pattern pattern = Pattern.compile("^(?=.*\\d)[a-zA-Z\\d]{4,5}$");
+		
 		Project project = (Project) target;
 		
 		System.out.println("Inside project validation");
@@ -46,16 +49,30 @@ public class ProjectValidator implements Validator{
         String projectId = project.getProjectIdentifier();
         String projetDescription = project.getDescription();
         
+        
+        
+        if (projectName.equals("")) {
+        	errors.rejectValue("projectName", "projectName.length", "Project Name can't be empty");
+        }
+        
         if(projectName.length() > 255) {
         	 errors.rejectValue("projectName", "projectName.length", "Project Name can't be greater than 255 char");
         }
         
-        if(projectId.length() > 5) {
-       	 errors.rejectValue("projectName", "projectIdentifier.length", "Project Name can't be greater than 5 length");
-       }
+//        if(projectId.length() > 5 || ) {
+//       	 errors.rejectValue("projectName", "projectIdentifier.length", "Project Name can't be greater than 5 length");
+//       }
+        
+        if (!pattern.matcher(projectId).matches()) {
+            errors.rejectValue("projectIdentifier", "field.pattern", "ProjectIdentifier must contain at least one letter and one digit and length of 4 to 5");
+        }
         
         if(projetDescription.length() > 255 ) {
         	 errors.rejectValue("description", "description.length", "Project Name can't be greater than 255 char");
+        }
+        
+        if (projetDescription.equals("")) {
+        	errors.rejectValue("description", "description.length", "Description Name can't be empty");
         }
         
 
@@ -65,7 +82,7 @@ public class ProjectValidator implements Validator{
         }
 
         if (endDate == null) {
-        	 errors.rejectValue("end_date", "Null", "Start date cannot be null");  
+        	 errors.rejectValue("end_date", "Null", "End date cannot be null");  
     }
         
         
@@ -81,9 +98,9 @@ public class ProjectValidator implements Validator{
             
             	 errors.rejectValue("start_date", "date", "Start date cannot be befor end date");
             }
-            if (localStartDate.isBefore(LocalDate.now())) {
-            	 errors.rejectValue("start_date", "date", "Start date cannot be before today");
-            }
+//            if (localStartDate.isBefore(LocalDate.now())) {
+//            	 errors.rejectValue("start_date", "date", "Start date cannot be before today");
+//            }
         }
 		
 	}

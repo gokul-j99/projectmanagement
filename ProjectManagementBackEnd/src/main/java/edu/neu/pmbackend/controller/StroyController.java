@@ -59,6 +59,8 @@ public class StroyController {
             BindingResult result,
             @PathVariable String project_id, Principal pr){
 		
+		story.setProjectIdentifier(project_id);
+		
 		storyValidator.validate(story, result);
 		
 		ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationErrorService(result);

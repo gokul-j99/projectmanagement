@@ -41,5 +41,22 @@ public class CustomReponseEntityExceptionHandler extends ResponseEntityException
 		
 		return new ResponseEntity(exceptionRes, HttpStatus.BAD_REQUEST);
 	}
+	
+	
+	@SuppressWarnings("rawtypes")
+	@ExceptionHandler(ProjectDeleteException.class)
+	public final ResponseEntity<Object> handleProjectDeleteNotFoundException(ProjectDeleteException ex, WebRequest req){
+		ProjectDeleteExceptionResponse exceptionRes = new ProjectDeleteExceptionResponse(ex.getMessage());
+		
+		return new ResponseEntity(exceptionRes, HttpStatus.BAD_REQUEST);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@ExceptionHandler(NoAccesException.class)
+	public final ResponseEntity<Object> handleAccessException(NoAccesException ex, WebRequest req){
+		NoAccesExceptionResponse exceptionRes = new NoAccesExceptionResponse(ex.getMessage());
+		
+		return new ResponseEntity(exceptionRes, HttpStatus.BAD_REQUEST);
+	}
 
 }

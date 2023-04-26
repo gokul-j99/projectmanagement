@@ -16,8 +16,9 @@ import org.springframework.util.StringUtils;
 
 import edu.neu.pmbackend.dao.UserDAO;
 import edu.neu.pmbackend.dao.UserDAOImpl;
-import edu.neu.pmbackend.entity.TeamMember;
 import edu.neu.pmbackend.entity.User;
+import edu.neu.pmbackend.exception.NoAccesException;
+import edu.neu.pmbackend.exception.ProjectNotFoundException;
 import edu.neu.pmbackend.exception.UserNameALreadyExistException;
 
 /**
@@ -49,6 +50,16 @@ public class UserService {
 	            user.setRole("Manager");
 	        }
 			
+			if(user.getManager_id() !=null) {
+			
+			User userManagr = userDao.getById(user.getManager_id());
+			
+			
+			if(!userManagr.getRole().equals("Manager")) {
+				throw new NoAccesException("You don't have access to this operation");
+			}
+			}
+			
 			System.out.println(user);
 			user.setUsername(user.getUsername());
 			user.setConfirmPassword("");
@@ -57,7 +68,14 @@ public class UserService {
 			email.sendReminderEmail(user.getUsername(), "Registeration mail", "User registered succesfully");
 			return userDao.save(user);
 			
-		} catch (Exception e) {
+		} 
+		
+		catch (NoAccesException e) {
+		    throw e;
+		} 
+		
+		
+		catch (Exception e) {
 			e.printStackTrace();
 			
 			throw new UserNameALreadyExistException("Username " + user.getUsername() + " already exist");

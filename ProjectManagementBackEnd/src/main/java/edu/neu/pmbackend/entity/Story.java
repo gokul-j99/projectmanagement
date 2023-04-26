@@ -34,7 +34,7 @@ public class Story {
 	private Long id;
 	@Column(name = "project_sequence" ,updatable = false, unique = true)
 	private String projectSequence;
-	@NotBlank(message = "Please include a project summary")
+	//@NotBlank(message = "Please include a project summary")
 	@Column(name = "summary")
 	private String summary;
 	@Column(name = "acceptance_criteria")

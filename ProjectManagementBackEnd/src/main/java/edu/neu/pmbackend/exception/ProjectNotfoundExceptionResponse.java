@@ -16,12 +16,20 @@ private String projectNotfound;
 		this.projectNotfound = projectNotfound;
 	}
 
-	public String getProjectIdentifier() {
+	/**
+	 * @return the projectNotfound
+	 */
+	public String getProjectNotfound() {
 		return projectNotfound;
 	}
 
-	public void setProjectIdentifier(String projectNotfound) {
+	/**
+	 * @param projectNotfound the projectNotfound to set
+	 */
+	public void setProjectNotfound(String projectNotfound) {
 		this.projectNotfound = projectNotfound;
 	}
+
+
 
 }
