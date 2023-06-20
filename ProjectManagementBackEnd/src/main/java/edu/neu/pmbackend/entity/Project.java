@@ -28,18 +28,12 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-   // @NotBlank(message = "Project name is required")
     @Column(name = "project_name")
     private String projectName;
-  //  @NotBlank(message = "Project identifier is required")
-    //@Size(min=4, max = 5, message = "Please use 4 to 5 characters")
     @Column(name = "project_identifier",updatable = false,unique = true)
     private String projectIdentifier;
-   // @NotBlank(message = "Project description is required")
     @Column(name = "description")
     private String description;
-
-   
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date start_date;
@@ -54,7 +48,6 @@ public class Project {
     @JsonIgnore
     private Backlog backlog;
 
-    //json ignore necessary because otherwise backlogs are also fetched if project is to be updated.
     @Column(name = "project_leader")
     private String projectLeader;
     
@@ -62,20 +55,11 @@ public class Project {
     @JsonIgnore
     private User user;
 
-    /**
-	 * @return the projectLeader
-	 */
-	public String getProjectLeader() {
-		return projectLeader;
+ 
+	
+	public Project() {
+		
 	}
-
-	/**
-	 * @param projectLeader the projectLeader to set
-	 */
-	public void setProjectLeader(String projectLeader) {
-		this.projectLeader = projectLeader;
-	}
-
 
 	
 	
@@ -115,27 +99,7 @@ public class Project {
 	  public void setDescription(String description) {
 	        this.description = description;
 	    }
-	
-	
-	
-	
-	
-	public Project(long id, String projectName, String projectIdentifier, String projectDescription, Date start_date,
-			Date end_date, Date created_At, Date updated_At) {
-		super();
-		this.id = id;
-		this.projectName = projectName;
-		this.projectIdentifier = projectIdentifier;
-		this.description = projectDescription;
-		this.start_date = start_date;
-		this.end_date = end_date;
-		this.created_At = created_At;
-		this.updated_At = updated_At;
-	}
-	
-	public Project() {
-		
-	}
+
 
 	public Long getId() {
 		return id;
@@ -219,6 +183,20 @@ public class Project {
 	public void setUpdated_At(Date updated_At) {
 		this.updated_At = updated_At;
 	}
+	
+	   /**
+		 * @return the projectLeader
+		 */
+		public String getProjectLeader() {
+			return projectLeader;
+		}
+
+		/**
+		 * @param projectLeader the projectLeader to set
+		 */
+		public void setProjectLeader(String projectLeader) {
+			this.projectLeader = projectLeader;
+		}
 
 
 

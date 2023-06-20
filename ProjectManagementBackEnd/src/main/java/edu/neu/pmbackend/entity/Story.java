@@ -64,8 +64,15 @@ public class Story {
 	@Column(name = "update_at")
 	private Date update_At;
 	
-	@Column(columnDefinition="COLUMN_TYPE default '1'")
+	@Column(columnDefinition="COLUMN_TYPE default '0'")
 	private long user_id;
+	
+	
+	
+
+	public Story() {
+
+	}
 
 	/**
 	 * @return the user_id
@@ -81,9 +88,6 @@ public class Story {
 		this.user_id = user_id;
 	}
 
-	public Story() {
-
-	}
 
 	/**
 	 * @return the id

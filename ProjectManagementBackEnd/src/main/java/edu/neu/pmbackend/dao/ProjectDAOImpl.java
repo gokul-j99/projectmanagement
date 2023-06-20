@@ -37,7 +37,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 
     @Override
     public List<Project> findAllById(Long ids) {
-    //	Session session = sessionFactory.openSession();
     	TypedQuery<Project> query = entityManager.createQuery("SELECT p FROM Project p WHERE p.id IN :ids", Project.class);
         query.setParameter("ids", ids);
         return query.getResultList();
@@ -52,20 +51,19 @@ public class ProjectDAOImpl implements ProjectDAO {
 
     @Override
     public List<Project> findAll() {
-    	//Session session = sessionFactory.openSession();
     	TypedQuery<Project> query = entityManager.createQuery("SELECT p FROM Project p", Project.class);
         return query.getResultList();
     }
 
-    @Override
-    @Transactional
-    public Project save(Project project) {
-    //	Session session = sessionFactory.openSession();
-    	System.out.println("before persist");
-    	entityManager.persist(project);
-        System.out.println("after persist");
-        return project;
-    }
+//    @Override
+//    @Transactional
+//    public Project save(Project project) {
+//    //	Session session = sessionFactory.openSession();
+//    	System.out.println("before persist");
+//    	entityManager.persist(project);
+//        System.out.println("after persist");
+//        return project;
+//    }
 
 	@Override
 	@Transactional
@@ -86,7 +84,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	
 	@Transactional
 	@Override
-	public Project update(Project project) {
+	public Project saveOrupdate(Project project) {
 		
 		System.out.println("Inside update");
 		Project mergedProject;

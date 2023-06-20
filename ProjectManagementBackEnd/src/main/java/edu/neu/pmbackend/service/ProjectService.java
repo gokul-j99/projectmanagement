@@ -87,7 +87,7 @@ public class ProjectService {
 				project.setBacklog(backlogdao.findByProjectIdentifier(project.getProjectIdentifier().toUpperCase()));
 			}
 			
-			 return projectDAO.update(project);
+			 return projectDAO.saveOrupdate(project);
 		}
 		
 		catch (ProjectNotFoundException e) {

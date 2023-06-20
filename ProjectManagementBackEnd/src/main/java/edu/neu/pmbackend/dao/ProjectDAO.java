@@ -20,11 +20,9 @@ public interface ProjectDAO {
 
     List<Project> findAll();
 
-    Project save(Project project);
-
     void deleteById(String id);
     
-    public Project update(Project user);
+    public Project saveOrupdate(Project user);
     
     
     List<Project> findAllByUserid(Long user_id);

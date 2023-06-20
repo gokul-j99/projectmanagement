@@ -56,29 +56,7 @@ public class ProjectController {
 	@Autowired
 	private MapValidationErrorService mapValidationErrorService;
 	
-	@PostMapping("/")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
-})
-	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project proj,BindingResult result, Principal pr){
-		
-		System.out.println(result);
-		
-		ResponseEntity<?> errorMAp = mapValidationErrorService.MapValidationErrorService(result);
-		
-		System.out.println(proj);
-		
-		if (errorMAp != null) {
-			return errorMAp;
-		}
-		
-		System.out.println("inside controller");
-		projectService.saveorUpdate(proj, pr.getName());
-		
-		return new ResponseEntity<Project>(proj, HttpStatus.CREATED);
-		
-		
-	}
+
 	
 	@GetMapping("/projectid/{id}")
 	@ApiImplicitParams({
@@ -110,9 +88,6 @@ public class ProjectController {
 	 
 	 public Iterable<Project> getProject(@PathVariable Long user_id, Principal pr){
 		 
-		 System.out.println("Inside all project");
-		 System.out.println(pr.getName());
-		 
 		 return projectService.getAllProject(user_id);
 		 
 		 
@@ -122,11 +97,9 @@ public class ProjectController {
 		@ApiImplicitParams({
 	        @ApiImplicitParam(name = "Authorization", value = "JWT Bearer token", dataType = "string", paramType = "header", required = true)
 	})
-		public ResponseEntity<?> addStory(@Valid @RequestBody Project proj,
+		public ResponseEntity<?> addProject(@Valid @RequestBody Project proj,
 	            BindingResult result,
 	            @PathVariable String user_id, Principal pr){
-			
-			System.out.println("Inside controller project 2nd attempt");
 			
 			projectValidator.validate(proj, result);
 			
